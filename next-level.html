@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revealed Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: rgb(210, 239, 255);
+            padding: 20px;
+        }
+        h1 {
+            color: #3d1374;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center; /* Centers the image horizontally */
+            align-items: center; /* Centers the image vertically (if needed) */
+            margin: 0 auto; /* Ensures the container itself is centered */
+            text-align: center; /* Ensures any text inside is centered */
+        }
+
+        .image-container img {
+            display: block; /* Removes extra spacing under the image */
+            max-width: 100%; /* Prevents overflow */
+            height: auto; /* Maintains aspect ratio */
+        }
+
+        .sweet-message {
+            font-size: 20px;
+            color: #052568;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .next-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #83b5f6;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .next-button:hover {
+            background-color: #160b69;
+        }
+    </style>
+</head>
+<body>
+    <h1>Surprise Message</h1>
+    
+    <div class="image-container">
+        <img id="levelImage" src="" alt="Sweet Moment">
+    </div>
+    
+    <p class="sweet-message" id="sweetMessage"></p>
+
+    <!-- Next Level Button -->
+    <button class="next-button" onclick="goToNextLevel()">Next Level</button>
+
+    <script>
+        // Array of images and corresponding messages
+        const levelData = [
+            { image: "pic0.jpeg", message: "The very first wish and prayer i would want for you is to always have the love and support of your amazing family with you and for everyone to stay healthy and safe. Rohitt, your parents are so much blessed to have a son like you and i know you will always make them proud."},
+            { image: "pic1.jpeg", message: ".( I just love this picture so much)" },
+            { image: "pic2.jpeg", message: "You are the Krishna to my Radha, Shiv to my Shakti and Ram to my Siya. Pata hai we would have made such a lovely Radha and Krishna if we knew eachother when we were that small. It would've been just perfect.Now we can't dress up like that sadly. You look 10000 times adorable and the way you are with Dandiya 😂🥹🫶🏻" },
+            { image: "pic4.jpeg", message: "DAMMMM, I mean look at you so hilariously handsome 😂. You somehow always manage to make me smile or laugh whether i'm feeling good or bad.  " },
+            { image: "pic6.jpeg", message: "You know sometimes you make life look so beautiful and honestly i love spending time with you. I'm not sure if i should've used this photo but that day was a great day, I had a lot of fun with you and yk we even did a lil dance. It was really nice. You peek-a-booed me when we were sitting at the table and eating dougnuts and you just looked so freaking adorable.😭" },
+            { image: "pic5.jpeg", message: "You should be in jail for life because how dare you be so handsome, charming, enchanting and sooooooooo fine.🧿🪬 Kahi tujhe meri hi nazar na lag jaae. Achaa ek shaayari aarahi hai english main lekin: Your smile feels like a gentle caress, filling my heart with warmth and grace. With your every glance,my world feels bright, A love so pure like golden light. " },
+            { image: "pic14.jpeg", message: "Loving you is the most beautiful thing i've done. You are my calm in the storm, my warmth in the cold, and my light in the dark. With you, even silence feels comforting, and every second feels like a lifetime of happiness.♥️ " },
+            { image: "pic10.jpeg", message: "Fun fact: we both had our first glasses in the shade of same blue. Idk why you get shy while wearing glasses. It really suits you yk, and i know you don't like to wear it but sometimes when we are together it would be really nice if we are twinning 😏. But seriously you even look so much adorable to me even in glasses. You look so sexily smart I swear. Now even more in your new transparent glasses." },
+            { image: "pic8.jpeg", message: "Sometimes idk you may feel like i don't feel the same or something. Somtimes I fail to show it properly. But I will try you dont feel like this but if you do someday just dont let it take over because there is nothing and no one that could ever change my feelings for you. BTW even reading this you look damn fine. I can sense through my magic powers🧚🏻‍♀️. " },
+            { image: "pic13.jpeg", message: "I know your favourite footballer is Messi, but guess who my favourite footballer is .And he is the best in my opinion 🥁🥁🥁🥁 : MR ROHITT VISWAKARMA. that's right ONE AND ONLY, ONE IN A TRILLION and THE LOVE OF MY LIFE AND THE BEST THAT HAS EVER HAPPENED TO ME. I LOVE YOU SO DAMN MUCH 💋💋💋. (You look so damn hot in this pic btw 🧿)"   },
+            { image: "pic11.jpeg", message: "This day is special for both of us and even tho it was uncomfortable for both of us at times, it was perfect in every way. We gave all of us to eachother and it is just so beautiful to have someone that is completely yours in every way. I am for you and you are for me, and this is how it will always be.   " },
+            { image: "pic9.jpeg", message: "Literally me adoring you doing anything 💘. I always imagine how romantic and just so beautiful it will be to write our wish together on a lantern and lit it and then release it to float in the air with thousands of other lanterns. The sky full of golden and black looking so beautiful and how amazing it will be to be there with you. You know what i would wish for, I would write R + V 4EVER ❤️. Because there is no one i wanna spend my life with but you. And in every lifetime or saat(7) janam tak (if its real). Rn I just wish we could see eachother more often." },
+            { image: "pic19.jpeg", message: "(Imagine this is how i'm laying on top of you. Just admiring your adorable self and thinking to myslef how much i love you and would do anything for you.) Aadat Toh Tum bhi meri ban chuke ho. Nahi aacha lagta agar ek din bhi baat na kare toh, adoora sa lagta hai. Bhaut yaad aate ho tum, tumhaari baahon main rehna, tumhare dil ko sunna, tumse milkar baatein karna, tumhara haat pakadna, tumhein dekhte rehna. I really miss you, sometimes like a loooooooooooooooot. Pyaar kiya hai tumse, sirf tumse, aur har pal karti rahungi." },
+            { image: "pic15.jpeg", message: "Give me your bad days, give me your good days. Give me your happy and give me your sad. I love you and all of you. Don't just give me your smile, but give me tears as well. Give me your body but also show me your scars. Don't just let me walk beside you in the sunshine, let me hold you through the storm. Give me all of you and let me love every single of piece that makes you, YOU. I may be physically distant but im always there with you and for you. I will love you and make you happy always and forever. I will love you till the end of time." },
+            { image: "pic18.jpeg", message: "To My Man: There is nothing in the world I'll find more beautiful than you. Not the flowers, not the world, not the sun, not the moon, not even the entire galaxy compares to light that radiates in your eyes, that radiates within you. " },
+            { image: "pic16.jpeg", message: "We've been through so much together: good times, bad times, arguments, fights... but one thing is certain, we always find our way back to eachother. I never wanna loose what we have and i never wanna loose you. EVER. I'm so thankful to you for always staying by my side and ik we will continue to support eachother and will stick to eachother through every big ups and downs to small ups and down.  ." },
+            { image: "pic12.jpeg", message: "If the world was ending I'd wanna be next to you. If the party was over and our time on earth was through, I'd wanna hold you just for a while and die with a smile. And it's not just lyrics." },
+            { image: "pic20.jpeg", message: "OH MY GODDDD! 😆 LOOK WHAT I FOUND 🥹🫶🏻. You all look so damn cute and adorable especially the one in the middle. (Special thanks to srishti for the pic)." },
+            { image: "pic7.jpeg", message: "If time were made of colours, you'd be my golden hour. If love was just a seed, you'd be each and every flower. If stars could really hold a wish, i'd wish to be with you. If eternity had a home,it'd be where we two grew." },
+            { image: "pic21.jpeg", message: "Sitaron se bhari hui raatein pasand hai, dur se suni tumhari baatein pasand hai. Tareef ke qabil toh hai tumhare baal bhi par, mujhe zyada tumhari aakhein pasand hai. " },
+            { image: "pic22.jpeg", message: "Happy Belated Birthday to the Love Of My Life. (As i'm writing this, it's 7:57pm rn and i'm missing you a lot. I wanna call you right away but i'm home and you are too probably with fam.) Whenever you're in doubt about my feelings, just have a look at this and remind yourself that whatever happens, I am going to love you and it's something that will never ever change ever. I LOVE YOU MR ROHITT VISWAKARMA LOADS AND LOADS AND LOADS OF LOVE YOU  💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋 " }
+        ];
+        
+    window.onload = function() {
+        // Define width settings for each image
+        const imageWidths = {
+            "pic0.jpeg": "30%", /*... 1 ...*/
+            "pic1.jpeg": "50%", /*... 2 ...*/
+            "pic2.jpeg": "30%", /*... 3 ...*/
+            "pic4.jpeg": "37%", /*... 4 ...*/
+            "pic6.jpeg": "65%", /*... 5 ...*/
+            "pic5.jpeg": "35%", /*... 6 ...*/
+            "pic14.jpeg": "60%", /*... 7 ...*/
+            "pic10.jpeg": "26%", /*... 8 ...*/
+            "pic8.jpeg": "65%", /*... 9 ...*/
+            "pic13.jpeg": "25%", /*... 10 ...*/
+            "pic11.jpeg": "60%", /*... 11 ...*/
+            "pic9.jpeg": "23%",  /*... 12 ...*/
+            "pic19.jpeg": "50%", /*... 13 ...*/
+            "pic15.jpeg": "27%", /*... 14 ...*/
+            "pic18.jpeg": "27%", /*... 15 ...*/
+            "pic16.jpeg": "60%", /*... 16 ...*/
+            "pic12.jpeg": "26%", /*... 17 ...*/
+            "pic20.jpeg": "40%", /*... 18 ...*/
+            "pic7.jpeg": "20%", /*... 19 ...*/
+            "pic21.jpeg": "40%", /*... 20 ...*/
+            "pic22.jpeg": "27%", /*... 20 ...*/
+        };
+
+        let currentLevel = localStorage.getItem("currentLevel") ? parseInt(localStorage.getItem("currentLevel")) : 0;
+
+        const imageElement = document.getElementById("levelImage");
+        const messageElement = document.getElementById("sweetMessage");
+        const imageContainer = document.querySelector(".image-container");
+        const nextLevelButton = document.getElementById("nextLevelButton");
+
+        if (levelData[currentLevel]) {
+            let currentImage = levelData[currentLevel].image;
+            imageElement.src = currentImage;
+            messageElement.textContent = levelData[currentLevel].message;
+
+            // Set width dynamically
+            if (imageWidths[currentImage]) {
+                imageContainer.style.width = imageWidths[currentImage];
+            } else {
+                imageContainer.style.width = "50%";
+            }
+        } 
+        if (currentLevel === 20 && nextLevelButton) {
+    nextLevelButton.style.display = "none"; 
+    nextLevelButton.disable = true;
+}
+
+        // Ensure image is centered
+        imageContainer.style.margin = "0 auto"; 
+    };
+
+    function loadLevel(level) {
+            if (level >= levelData.length) return; // Prevent overflow
+
+            document.getElementById("levelImage").src = levelData[level].image;
+            document.getElementById("sweetMessage").innerText = levelData[level].message;
+            
+            if (level === 20) { // 21st level (0-based index)
+                document.getElementById("nextButton").style.display = "none";
+                nextLevelButton.style.display = "none";
+                nextLevelButton.disable = true;
+            } 
+        }
+    function goToNextLevel() {
+        let currentLevel = localStorage.getItem("currentLevel") ? parseInt(localStorage.getItem("currentLevel")) : 0;
+       
+        if (currentLevel < 20) {
+        currentLevel++;
+        localStorage.setItem("currentLevel", currentLevel);
+        window.location.href = "search.html";
+    } 
+    if (currentLevel === 20 ){
+        nextLevelButton.style.display = "none";
+    }
+    }
+
+   
+
+        
+        localStorage.setItem("currentLevel", currentLevel);
+        window.location.href = "search.html";
+        
+        window.onload = function() {
+            localStorage.setItem("currentLevel", 0);
+        }
+    </script>
+</body>
+</html>

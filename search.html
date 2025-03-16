@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #bfd7f3;
+        }
+        h1 {
+            color: #0f6491;
+        }
+        p{
+         color: rgb(44, 91, 145);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            grid-template-rows: repeat(10, 40px);
+            gap: 2px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #0d1574;
+            font-size: 20px;
+            background-color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+        .selected {
+            background-color: #99dfff;
+        }
+        .found {
+            background-color: var(--found-color);
+        }
+        .next-level-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3392d6;
+            color: rgb(20, 50, 128);
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .next-level-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .level-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .reveal-message-section {
+            display: none;
+            background-color: #fff0f6;
+            padding: 20px;
+            border: 2px solid #feb2d8;
+            margin-top: 20px;
+        }
+        .reveal-message {
+            font-size: 20px;
+            color: #fdc0de;
+            font-weight: bold;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+
+        }
+        .reveal-btn {
+            padding: 10px 20px;
+            background-color: #e489b6;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+}
+
+#levelNav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            color: #0d1574;
+           
+        }
+        select, button {
+            background-color: transparent;
+            padding: 5px;
+            font-size: 16px;
+            border: none;
+            color: #0d1574;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Search</h1>
+    <p>Find the hidden  words!</p>
+    <div class="grid" id="grid"></div>
+    <p id="words"></p>
+    <p id="level">Level: 1</p>
+    <div class="level-message" id="levelMessage"></div>
+    <div id="nextLevelBtnContainer">
+        <button id="nextLevelBtn" class="next-level-btn" disabled>Next Level</button>
+    </div>
+
+    <div id="revealMessageSection" class="reveal-message-section">
+        <p class="reveal-message" id="revealMessage">You've completed the level! Ready for the next challenge?</p>
+        <button id="nextLevelBtnAfterReveal" class="next-level-btn" disabled>Next Level</button>
+        <ref></ref>
+    </div>
+
+    <button id="revealMessageBtn" class="reveal-btn" style="display: none;" onclick="openRevealPage()">Reveal Message</button>
+    <script>
+          function openRevealPage() {
+        localStorage.setItem("currentLevel", currentLevel); // Store level info
+        window.location.href = "next-level.html"; // Open new page
+    } 
+        const levels = [
+            {
+                gridSize: 10,/*... 1 ...*/
+                words: ["SWEET","FAMILY"]
+            },
+            {
+                gridSize: 10,/*... 2 ...*/
+                words: ["LOVELY","MUM","CHILD"]
+            },
+            {
+                gridSize: 10,/*... 3 ...*/
+                words: ["DEVOTION","LOYALTY","TRUTH"]
+            },
+            {
+                gridSize: 10,/*... 4 ...*/
+                words: ["HILARIOUS","HANDSOME"]
+            },
+            {
+                gridSize: 10,/*... 5 ...*/
+                words: ["FUN","ADORABLE","DANCE"]
+            },
+            {
+                gridSize: 10,/*... 6 ...*/
+                words: ["SMILE","HAPPY","YELLOW","YOU"]
+            },
+            {
+                gridSize: 10,/*... 7 ...*/
+                words: ["CALM","WARMTH","LIGHT","COMFORT"]
+            },
+            {
+                gridSize: 10,/*... 8 ...*/
+                words: ["BLUE","TWINNING","SMART","SEXY"]
+            },
+            {
+                gridSize: 10,/*... 9 ...*/
+                words: ["FINE","TRUST","BELIEVE"]
+            },
+            {
+                gridSize: 10,/*... 10 ...*/
+                words: ["ROHITT","TEN","MESSI","FAVOURITE","HOT"]
+            },
+            {
+                gridSize: 10,/*... 11 ...*/
+                words: ["SPECIAL","MORNING","HEART"]
+            },
+            {
+                gridSize: 10,/*... 12 ...*/
+                words: ["TANGLED","ADORABLE","ROMANTIC"]
+            },
+            {
+                gridSize: 10,/*... 13 ...*/
+                words: ["BEAUTIFUL","VIRTI","ADMIRING","YOU"]
+            },
+            {
+                gridSize: 10,/*... 14 ...*/
+                words: ["YOU","ME","ALWAYS","FOREVER"]
+            },
+            {
+                gridSize: 10,/*... 15 ...*/
+                words: ["SUN","MOON","GALAXY"]
+            },
+            {
+                gridSize: 10,/*... 16 ...*/
+                words: ["BACK","TO","US"]
+            },
+            {
+                gridSize: 10,/*... 17 ...*/
+                words: ["BRUNO","MARS","LADY","GAGA"]
+            },
+            {
+                gridSize: 10,/*... 18 ...*/
+                words: ["TWIN","SIBLINGS"]
+            },
+            {
+                gridSize: 10,/*... 19 ...*/
+                words: ["GOLDEN","FLOWER","ETERNITY"]
+            },
+            {
+                gridSize: 10,/*... 20 ...*/
+                words: ["YOU"]
+            },
+            {
+                gridSize: 10,/*... 21 ...*/
+                words: ["WORLD"]
+            }
+        ];
+        
+
+
+let currentLevel = localStorage.getItem("currentLevel") ? parseInt(localStorage.getItem("currentLevel")) : 0;
+
+function goToNextLevel() {
+    if (currentLevel < levels.length - 1) {
+        currentLevel++; 
+        localStorage.setItem("currentLevel", currentLevel); // Store new level
+        loadLevel(currentLevel); // Load next level
+    } else {
+        alert("Congratulations! You've completed all levels!");
+        localStorage.removeItem("currentLevel");
+        nextLevelBtnAfterReveal.style.display = "none"; // Hide next level button
+    }
+
+    // Ensure buttons are correctly enabled/disabled
+    if (currentLevel === 20) {  // 21st level (index 20)
+        nextLevelBtn.disabled = true;  // Disable button
+        nextLevelBtn.style.display = "none";  // Hide button
+        nextLevelBtnAfterReveal.style.display = "none";
+    }
+};
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadLevel(currentLevel);
+    if (currentLevel === 20) {  
+        nextLevelBtn.disabled = true;
+        nextLevelBtn.style.display = "none";
+        nextLevelBtnAfterReveal.disabled = true;
+        nextLevelBtnAfterReveal.style.display = "none";
+}});
+
+        const gridElement = document.getElementById("grid");
+        const nextLevelBtn = document.getElementById("nextLevelBtn");
+        const nextLevelBtnAfterReveal = document.getElementById("nextLevelBtnAfterReveal");
+        const revealMessageBtn = document.getElementById("revealMessageBtn");
+        const revealMessageSection = document.getElementById("revealMessageSection");
+        const levelMessage = document.getElementById("levelMessage");
+        let grid, selectedCells = [];
+        const pastelColors = ["#FFB6C1", "#A2D2FF", "#FFD1DC", "#B5EAD7", "#FFDAC1", "#C5A3FF", "#FF9AA2","#caffbf","#e4c1f9"];
+        let foundWords = {};
+        const handleMouseMove = (rowIndex, colIndex) => {
+  if (!isSelecting) return;
+
+  const rowDiff = Math.abs(rowIndex - startRow);
+  const colDiff = Math.abs(colIndex - startCol);
+
+  if (rowDiff === colDiff) {  // Ensures a diagonal selection
+    setEndRow(rowIndex);
+    setEndCol(colIndex);
+  }
+};
+
+
+        function loadLevel(levelIndex) {
+            const level = levels[levelIndex];
+            grid = Array.from({ length: level.gridSize }, () => Array(level.gridSize).fill(''));
+            selectedCells = [];
+            foundWords = {};
+            document.getElementById("level").textContent = `Level: ${levelIndex + 1}`;
+            document.getElementById("words").textContent = "Words to find: " + level.words.join(", ");
+            createGrid(level.gridSize, level.words);
+            nextLevelBtnContainer.style.display = "none"; // Hide the next level button initially
+            revealMessageBtn.style.display = "none"; // Hide the reveal message button initially
+            nextLevelBtn.disabled = true; // Ensure it's disabled at first
+            levelMessage.textContent = ""; // Clear the message for the new level
+            revealMessageSection.style.display = "none"; // Hide the message section initially
+        }
+
+        function createGrid(gridSize, words) {
+            gridElement.innerHTML = ''; // Clear the grid
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    let cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    grid[row][col] = cell;
+                    gridElement.appendChild(cell);
+                    cell.addEventListener("click", () => selectCell(cell));
+                }
+            }
+            placeWords(words, gridSize);
+            fillEmptyCells(gridSize);
+        }
+
+        function placeWords(words, gridSize) {
+    words.forEach((word, index) => {
+        let placed = false;
+        let attempts = 0; // Add an attempt counter
+        while (!placed && attempts < 100) { // Limit attempts to prevent infinite loop
+            let row = Math.floor(Math.random() * gridSize);
+            let col = Math.floor(Math.random() * gridSize);
+            let direction = Math.floor(Math.random() * 3); // 0: horizontal, 1: vertical, 2: diagonal
+            
+            if (canPlaceWord(word, row, col, direction, gridSize)) {
+                foundWords[word] = pastelColors[index % pastelColors.length];
+                for (let i = 0; i < word.length; i++) {
+                    if (direction === 0) grid[row][col + i].textContent = word[i]; // Horizontal
+                    if (direction === 1) grid[row + i][col].textContent = word[i]; // Vertical
+                    
+                }
+                placed = true;
+            }
+            attempts++; // Increment attempt counter
+        }
+
+        if (!placed) {
+            console.warn(`Word "${word}" could not be placed in the grid!`);
+        }
+    });
+}
+
+
+        function canPlaceWord(word, row, col, direction, gridSize) {
+            if (direction === 0 && col + word.length > gridSize) return false; // Horizontal
+            if (direction === 1 && row + word.length > gridSize) return false; // Vertical
+            if (direction === 2 && (row + word.length > gridSize || col + word.length > gridSize)) return false; // Diagonal
+            
+            for (let i = 0; i < word.length; i++) {
+                if (direction === 0 && grid[row][col + i].textContent) return false;
+                if (direction === 1 && grid[row + i][col].textContent) return false;
+                if (direction === 2 && grid[row + i][col + i].textContent) return false;
+            }
+            return true;
+        }
+
+        function fillEmptyCells(gridSize) {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (!grid[row][col].textContent) {
+                        let randomLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)];
+                        grid[row][col].textContent = randomLetter;
+                    }
+                }
+            }
+        }
+
+        function selectCell(cell) {
+            if (cell.classList.contains("found")) return;
+            if (selectedCells.includes(cell)) {
+                cell.classList.remove("selected");
+                selectedCells = selectedCells.filter(c => c !== cell);
+            } else {
+                cell.classList.add("selected");
+                selectedCells.push(cell);
+            }
+            checkWord();
+        }
+
+        function checkWord() {
+    let selectedWord = selectedCells.map(cell => cell.textContent).join("");
+    let foundWordIndex = levels[currentLevel].words.findIndex(word => word === selectedWord);
+    
+    if (foundWordIndex !== -1) {
+        let foundColor = foundWords[levels[currentLevel].words[foundWordIndex]];
+        selectedCells.forEach(cell => {
+            cell.classList.add("found");
+            cell.style.backgroundColor = foundColor;
+            cell.classList.remove("selected");
+        });
+        
+        selectedCells = [];
+        levels[currentLevel].words.splice(foundWordIndex, 1);
+        document.getElementById("words").textContent = "Words to find: " + levels[currentLevel].words.join(", ");
+        
+        if (levels[currentLevel].words.length === 0) {
+            levelMessage.textContent = `Congratulations! You completed level ${currentLevel + 1}!`;
+            revealMessageBtn.style.display = "block"; // Show the reveal message button
+            nextLevelBtn.disabled = false; // Enable next level button
+        }
+
+        // Disable next level button if currentLevel is 21 or more
+        if (currentLevel >= 20) {
+            nextLevelBtn.disabled = true;
+            nextLevelBtn.style.display = "none";
+            nextLevelBtnAfterReveal.disabled = true;
+            nextLevelBtnAfterReveal.style.display = "none";
+        }
+    }
+}
+
+        
+
+        revealMessageBtn.addEventListener("click", () => {
+            revealMessageSection.style.display = "block"; // Show the message section
+            nextLevelBtnAfterReveal.disabled = false; // Enable the next level button
+        });
+
+      
+
+        nextLevelBtnAfterReveal.addEventListener("click", () => {
+            currentLevel++;
+            if (currentLevel < levels.length) {
+                loadLevel(currentLevel);
+            } else {
+                levelMessage.textContent = "Congratulations! You've completed all levels!";
+            }
+        });
+       
+        let isDragging = false;
+
+gridElement.addEventListener("mousedown", (event) => {
+    if (event.target.classList.contains("cell")) {
+        isDragging = true;
+        selectedCells = [];
+        selectCell(event.target);
+    }
+});
+
+gridElement.addEventListener("mouseover", (event) => {
+    if (isDragging && event.target.classList.contains("cell")) {
+        selectCell(event.target);
+    }
+});
+
+gridElement.addEventListener("mouseup", () => {
+    isDragging = false;
+    checkWord();
+});
+
+// Create a navigation bar with level selection
+document.body.insertAdjacentHTML('afterbegin', `
+    <nav id="levelNav">
+        <label for="levelSelect">Jump to Level:</label>
+        <select id="levelSelect">
+            ${Array.from({ length: 21 }, (_, i) => `<option value="${i}">Level ${i + 1}</option>`).join('')}
+        </select>
+        <button id="goToLevelBtn">Go</button>
+    </nav>
+   
+`);
+
+// Event listener for level navigation
+document.getElementById("goToLevelBtn").addEventListener("click", () => {
+    let selectedLevel = parseInt(document.getElementById("levelSelect").value);
+    if (selectedLevel >= 0 && selectedLevel < levels.length) {
+        currentLevel = selectedLevel;
+        localStorage.setItem("currentLevel", currentLevel);
+        loadLevel(currentLevel);
+    }
+});
+
+// Ensure dropdown reflects current level
+document.getElementById("levelSelect").value = currentLevel;
+
+
+     window.onload = function() {
+        localStorage.setItem("currentLevel", 0);
+    };
+        loadLevel(currentLevel);
+    </script>
+</body>
+</html>
