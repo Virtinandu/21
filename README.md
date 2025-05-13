@@ -1,4 +1,4 @@
-To Open This Project click on the below link:
+To Open This Project, click on the link:
 https://virtinandu.github.io/21/
 password: 1013
 
